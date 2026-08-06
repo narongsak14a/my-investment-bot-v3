@@ -4,12 +4,15 @@ import feedparser
 from google import genai
 from tradingview_ta import TA_Handler, Interval
 
-# ดึง Key จาก Secrets บน GitHub
+# ==========================================
+# 1. ตั้งค่า API Key & Cloudflare Endpoint
+# ==========================================
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-LINE_ACCESS_TOKEN = os.environ.get("LINE_ACCESS_TOKEN")
-LINE_USER_ID = os.environ.get("LINE_USER_ID")
 
-# ... (ส่วนโค้ดฟังก์ชันอื่นๆ จาก Colab ของคุณเหมือนเดิมได้เลย) ...
+# ดึง URL ของ Cloudflare Worker / Webhook จาก Environment Variables
+CLOUDFLARE_WORKER_URL = os.environ.get("CLOUDFLARE_WORKER_URL")
+# (Optional) หาก Cloudflare Worker มีการตั้งค่า Bearer Token ไว้เพื่อความปลอดภัย
+CLOUDFLARE_AUTH_TOKEN = os.environ.get("CLOUDFLARE_AUTH_TOKEN")
 
 # รายชื่อสินทรัพย์เป้าหมาย
 ASSETS = [
@@ -21,7 +24,7 @@ ASSETS = [
 ]
 
 # ==========================================
-# 2. ฟังก์ชันดึงข้อมูล TradingView, RSS & ส่ง LINE
+# 2. ฟังก์ชันดึงข้อมูล TradingView, RSS & ส่ง Cloudflare
 # ==========================================
 def fetch_all_tradingview_signals():
     print("⏳ กำลังดึงสัญญาณเทคนิคคอลจาก TradingView...")
@@ -55,24 +58,35 @@ def fetch_rss_news():
         news_compiled = "• ไม่สามารถดึงข่าวสารได้ในขณะนี้\n"
     return news_compiled
 
-def send_line_push_message(message_text):
-    url = "https://api.line.me/v2/bot/message/push"
+def send_to_cloudflare(message_text):
+    print("⏳ กำลังส่งข้อมูลไปยัง Cloudflare...")
+    
+    if not CLOUDFLARE_WORKER_URL:
+        print("❌ ไม่พบ CLOUDFLARE_WORKER_URL ใน GitHub Secrets")
+        return
+
     headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {LINE_ACCESS_TOKEN.strip()}"
+        "Content-Type": "application/json"
     }
+    
+    if CLOUDFLARE_AUTH_TOKEN:
+        headers["Authorization"] = f"Bearer {CLOUDFLARE_AUTH_TOKEN.strip()}"
+
+    # Payload JSON สำหรับส่งต่อไปยัง Cloudflare
     payload = {
-        "to": LINE_USER_ID,
-        "messages": [{"type": "text", "text": message_text}]
+        "email": "narongsak14@gmail.com",
+        "report_type": "CIO_DAILY_REPORT",
+        "content": message_text
     }
+
     try:
-        response = requests.post(url, json=payload, headers=headers)
-        if response.status_code == 200:
-            print("✅ ส่งรายงานเข้า LINE เรียบร้อยแล้ว!")
+        response = requests.post(CLOUDFLARE_WORKER_URL, json=payload, headers=headers)
+        if response.status_code in [200, 201]:
+            print("✅ ส่งรายงานไปยัง Cloudflare เรียบร้อยแล้ว!")
         else:
-            print(f"❌ ส่ง LINE ไม่สำเร็จ (HTTP {response.status_code}): {response.text}")
+            print(f"❌ ส่งเข้า Cloudflare ไม่สำเร็จ (HTTP {response.status_code}): {response.text}")
     except Exception as e:
-        print(f"❌ เกิดข้อผิดพลาดในการส่ง LINE: {e}")
+        print(f"❌ เกิดข้อผิดพลาดในการส่งไปยัง Cloudflare: {e}")
 
 # ==========================================
 # 3. ฟังก์ชันประมวลผล Gemini และสั่งรัน
@@ -124,9 +138,9 @@ def run_investment_ai_pipeline():
         print("\n--- ✨ รายงานจาก Gemini ---")
         print(report_text)
 
-        print("\n📤 กำลังส่งรายงานไปยัง LINE...")
+        print("\n📤 กำลังส่งรายงานไปยัง Cloudflare...")
         header = "📊 [รายงานสรุปกลยุทธ์การลงทุนประจำวัน CIO Report]\n\n"
-        send_line_push_message(header + report_text)
+        send_to_cloudflare(header + report_text)
 
     except Exception as e:
         print(f"❌ เกิดข้อผิดพลาดในระบบ AI: {e}")
