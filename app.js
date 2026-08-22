@@ -260,9 +260,14 @@ function renderSecondaryAssetsTable() {
       <td style="padding:6px 8px; font-weight:bold; color:var(--text-main);">${item.code}</td>
       <td style="padding:6px 8px; text-align:right; color:var(--gold);">${(parseFloat(item.amount)||0).toLocaleString()} ฿</td>
       <td style="padding:6px 8px; text-align:center;">
-        <button class="btn btn-danger" style="padding:2px 6px; font-size:10px;" onclick="deleteSecondaryAsset('${item.id}')">
-          <i class="fa-solid fa-trash"></i>
-        </button>
+        <div style="display:flex; gap:4px; justify-content:center;">
+          <button class="btn btn-gold" style="padding:2px 6px; font-size:10px;" onclick="openEditSecondaryModal('${item.id}')" title="แก้ไขทั้ง 3 ช่อง">
+            <i class="fa-solid fa-pen"></i> แก้ไข
+          </button>
+          <button class="btn btn-danger" style="padding:2px 6px; font-size:10px;" onclick="deleteSecondaryAsset('${item.id}')" title="ลบรายการ">
+            <i class="fa-solid fa-trash"></i> ลบ
+          </button>
+        </div>
       </td>
     </tr>
   `).join('');
@@ -274,7 +279,6 @@ function renderSecondaryTechnicalAnalysisTable() {
 
   // Generate technical MA(12) / MA(26) indicators for each asset
   tbody.innerHTML = secondaryAssets.map((item, index) => {
-    // Generate deterministic MA values for demonstration/analysis
     const isGoldOrUs = item.bank.includes('ทองคำ') || item.bank.includes('หุ้นสหรัฐ') || item.code.includes('GOLD') || item.code.includes('NVDA');
     const isChina = item.code.includes('CHINA') || item.code.includes('KWEB');
 
@@ -310,6 +314,26 @@ function renderSecondaryTechnicalAnalysisTable() {
 }
 
 function openAddSecondaryModal() {
+  document.getElementById('edit-sec-id').value = '';
+  document.getElementById('sec-modal-title').innerText = 'เพิ่มสินทรัพย์รอง / กองทุน RMF ใหม่';
+  document.getElementById('new-sec-bank').value = '';
+  document.getElementById('new-sec-code').value = '';
+  document.getElementById('new-sec-amount').value = '';
+
+  const modal = document.getElementById('add-sec-asset-modal');
+  if (modal) modal.classList.add('active');
+}
+
+function openEditSecondaryModal(id) {
+  const item = secondaryAssets.find(a => a.id === id);
+  if (!item) return;
+
+  document.getElementById('edit-sec-id').value = item.id;
+  document.getElementById('sec-modal-title').innerText = `แก้ไขข้อมูลทั้ง 3 ช่อง (${item.code})`;
+  document.getElementById('new-sec-bank').value = item.bank;
+  document.getElementById('new-sec-code').value = item.code;
+  document.getElementById('new-sec-amount').value = item.amount;
+
   const modal = document.getElementById('add-sec-asset-modal');
   if (modal) modal.classList.add('active');
 }
@@ -319,24 +343,36 @@ function closeAddSecondaryModal() {
   if (modal) modal.classList.remove('active');
 }
 
-function saveNewSecondaryAsset() {
+function saveSecondaryAssetItem() {
+  const editId = document.getElementById('edit-sec-id').value;
   const bank = document.getElementById('new-sec-bank').value.trim();
   const code = document.getElementById('new-sec-code').value.trim();
   const amount = parseFloat(document.getElementById('new-sec-amount').value) || 0;
 
-  if (!bank || !code || amount <= 0) {
+  if (!bank || !code || amount < 0) {
     alert('กรุณากรอกข้อมูล สถาบัน, ชื่อกองทุน/หุ้น และมูลค่าเงินให้ครบถ้วน');
     return;
   }
 
-  const newAsset = {
-    id: `sec-${Date.now()}`,
-    bank: bank,
-    code: code,
-    amount: amount
-  };
+  if (editId) {
+    // Edit Existing Asset
+    const idx = secondaryAssets.findIndex(a => a.id === editId);
+    if (idx !== -1) {
+      secondaryAssets[idx].bank = bank;
+      secondaryAssets[idx].code = code;
+      secondaryAssets[idx].amount = amount;
+    }
+  } else {
+    // Add New Asset
+    const newAsset = {
+      id: `sec-${Date.now()}`,
+      bank: bank,
+      code: code,
+      amount: amount
+    };
+    secondaryAssets.push(newAsset);
+  }
 
-  secondaryAssets.push(newAsset);
   localStorage.setItem('ai_secondary_assets', JSON.stringify(secondaryAssets));
 
   closeAddSecondaryModal();
@@ -344,12 +380,7 @@ function saveNewSecondaryAsset() {
   renderSecondaryTechnicalAnalysisTable();
   applyPortfolioToAllTabs();
 
-  // Clear Form
-  document.getElementById('new-sec-bank').value = '';
-  document.getElementById('new-sec-code').value = '';
-  document.getElementById('new-sec-amount').value = '';
-
-  alert('✅ เพิ่มสินทรัพย์รองเรียบร้อยแล้ว!');
+  alert('✅ บันทึกข้อมูลทั้ง 3 ช่องเรียบร้อยแล้ว!');
 }
 
 function deleteSecondaryAsset(id) {
