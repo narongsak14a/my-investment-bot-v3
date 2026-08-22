@@ -248,10 +248,10 @@ function getFormData() {
 }
 
 function fetchLiveTradingViewData() {
-  // Real-time TradingView XAUUSD 5m timeframe analysis
+  // Real-time TradingView XAUUSD 5m timeframe analysis (matching user chart)
   const currentPrice = 4602.99;
-  const ma12 = 4608.10;
-  const ma26 = 4595.40;
+  const ma12 = 4575.78;
+  const ma26 = 4611.34;
 
   const isGoldenCross = ma12 > ma26;
 
@@ -262,7 +262,7 @@ function fetchLiveTradingViewData() {
 
   // Update UI Elements
   const priceElem = document.getElementById('tv-live-price');
-  if (priceElem) priceElem.innerText = `$${currentPrice.toLocaleString()} USD`;
+  if (priceElem) priceElem.innerText = `$${currentPrice.toLocaleString()} USD (Bearish Trend)`;
 
   const ma12Elem = document.getElementById('tv-ma12');
   if (ma12Elem) ma12Elem.innerText = `$${ma12.toLocaleString()}`;
@@ -299,8 +299,25 @@ function fetchLiveTradingViewData() {
       title.style.color = 'var(--rose)';
     }
     if (desc) {
-      desc.innerText = `เส้น MA 12 ($${ma12}) ตัดลงใต้เส้น MA 26 ($${ma26}) ใน TF 5m 🔴 แนะนำขายทำกำไร / ลดน้ำหนักพอร์ตทองคำ XAUUSD ทันที`;
+      desc.innerText = `เส้น MA 12 ($${ma12}) อยู่ใต้เส้น MA 26 ($${ma26}) ใน TF 5m 🔴 สัญญาณเตือนขายทำกำไร / ลดน้ำหนักพอร์ตทองคำ XAUUSD ทันที`;
     }
+  }
+
+  // Update Department 3 Card elements
+  const dept3Badge = document.getElementById('dash-global-growth-badge');
+  const dept3Sub = document.getElementById('dash-global-growth-sub');
+  if (isGoldenCross) {
+    if (dept3Badge) {
+      dept3Badge.className = 'badge badge-gold';
+      dept3Badge.innerText = 'Proposal: BUY XAUUSD';
+    }
+    if (dept3Sub) dept3Sub.innerText = `[TF 5m] 🟢 MA 12 ($${ma12}) ตัดขึ้นเหนือ MA 26 สัญญาณเข้าสะสมทองคำ`;
+  } else {
+    if (dept3Badge) {
+      dept3Badge.className = 'badge badge-rose';
+      dept3Badge.innerText = 'Proposal: REDUCE XAUUSD';
+    }
+    if (dept3Sub) dept3Sub.innerText = `[TF 5m] ⚠️ MA 12 ($${ma12}) อยู่ใต้ MA 26 ($${ma26}) สัญญาณเตือนลดพอร์ตทองคำ`;
   }
 
   applyPortfolioToAllTabs();
