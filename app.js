@@ -71,11 +71,11 @@ const defaultPortfolioData = {
   thaiCpi: 2.1,
   globalCpi: 3.2,
   hurdleRate: 5.0,
-  goldPrice: 4100,
+  goldPrice: 4602.99,
   goldBudget: 100000,
-  goldEntry: 4100,
-  goldStopLoss: 3900,
-  goldTakeProfit: 4500
+  goldEntry: 4540.00,
+  goldStopLoss: 4480.00,
+  goldTakeProfit: 4800.00
 };
 
 let portfolioData = JSON.parse(localStorage.getItem('ai_portfolio_data')) || defaultPortfolioData;
@@ -456,8 +456,9 @@ function loadDailyReport() {
 
     <h3 style="color:#2b6cb0; margin-top:20px;">📋 ข้อเสนอการลงทุนและการพิจารณาความเสี่ยงประจำวัน</h3>
     <ul style="font-size:13px; line-height:1.8;">
-      <li><strong>ข้อเสนอแผนก Global Growth Assets</strong>: ซื้อสะสมทองคำ (XAUUSD Spot/Fund) วงเงิน <strong>${d.goldBudget.toLocaleString()} บาท</strong> ที่ราคา ${d.goldPrice.toLocaleString()} THB (Take Profit ${d.goldTakeProfit.toLocaleString()})</li>
-      <li><strong>จุดตัดขาดทุน (Stop Loss)</strong>: ${d.goldStopLoss.toLocaleString()} THB</li>
+      <li><strong>สถานะ XAUUSD Real-time</strong>: 🟢 <strong>$4,602.99 USD / oz</strong> (Bullish Trend, CDC ActionZone สีเขียว, Stoch 92.01 Overbought)</li>
+      <li><strong>ข้อเสนอแผนก Global Growth Assets</strong>: ซื้อสะสมทองคำ (XAUUSD Spot/Fund) วงเงิน <strong>${d.goldBudget.toLocaleString()} บาท</strong> ที่ราคาปัจจุบัน $${d.goldPrice.toLocaleString()} (Take Profit $${d.goldTakeProfit.toLocaleString()})</li>
+      <li><strong>จุดตัดขาดทุน (Stop Loss)</strong>: $${d.goldStopLoss.toLocaleString()} USD</li>
       <li><strong>ผลการออดิเต็ดโดย Risk Control Officer</strong>: 🟢 <strong>APPROVED (ผ่านการอนุมัติ)</strong> ไม่กระทบรายจ่าย ${(d.monthlyWithdrawal/1000).toFixed(0)}k/เดือน และไม่มีการใช้ Leverage</li>
     </ul>
   `;
