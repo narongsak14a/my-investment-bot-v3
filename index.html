@@ -569,31 +569,32 @@
     </div>
   </div>
 
-  <!-- Add Secondary Asset Modal -->
+  <!-- Add / Edit Secondary Asset Modal -->
   <div class="modal-overlay" id="add-sec-asset-modal">
     <div class="modal-box">
       <h3 style="color:#ffffff; font-family:var(--font-title); margin-bottom:14px;">
-        <i class="fa-solid fa-plus-circle"></i> เพิ่มสินทรัพย์รอง / กองทุน RMF ใหม่
+        <i class="fa-solid fa-pen-to-square"></i> <span id="sec-modal-title">จัดการข้อมูลสินทรัพย์รอง / กองทุน RMF</span>
       </h3>
+      <input type="hidden" id="edit-sec-id" value="">
 
       <div class="form-group">
-        <label class="form-label">สถาบัน / ธนาคาร / หมวดสินทรัพย์:</label>
+        <label class="form-label">ช่องที่ 1 - สถาบัน / ธนาคาร / หมวดสินทรัพย์:</label>
         <input type="text" class="form-input" id="new-sec-bank" placeholder="เช่น ธ.กรุงไทย, ธ.กรุงศรี, หุ้นสหรัฐ, ทองคำ">
       </div>
 
       <div class="form-group">
-        <label class="form-label">ชื่อกองทุน / ชื่อหุ้น (Fund Code / Symbol):</label>
+        <label class="form-label">ช่องที่ 2 - ชื่อกองทุน / ชื่อหุ้น (Fund Code / Symbol):</label>
         <input type="text" class="form-input" id="new-sec-code" placeholder="เช่น RMF4, KFCASHRMF, NVDA, CPALL">
       </div>
 
       <div class="form-group">
-        <label class="form-label">มูลค่าสินทรัพย์ (บาท):</label>
+        <label class="form-label">ช่องที่ 3 - มูลค่าสินทรัพย์ (บาท):</label>
         <input type="number" class="form-input" id="new-sec-amount" placeholder="ระบุมูลค่าเงินลงทุน เช่น 248562">
       </div>
 
       <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
         <button class="btn btn-outline" onclick="closeAddSecondaryModal()">ยกเลิก</button>
-        <button class="btn btn-gold" onclick="saveNewSecondaryAsset()">บันทึกสินทรัพย์</button>
+        <button class="btn btn-gold" onclick="saveSecondaryAssetItem()">บันทึกข้อมูลทั้ง 3 ช่อง</button>
       </div>
     </div>
   </div>
