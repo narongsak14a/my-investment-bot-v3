@@ -303,6 +303,7 @@ function renderSecondaryTechnicalAnalysisTable() {
 
     return `
       <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+        <td style="padding:5px 6px; color:var(--text-muted);">${item.bank}</td>
         <td style="padding:5px 6px; font-weight:bold; color:var(--text-main);">${item.code}</td>
         <td style="padding:5px 6px; text-align:right; color:#60a5fa;">${parseInt(ma12Val).toLocaleString()}</td>
         <td style="padding:5px 6px; text-align:right; color:#a78bfa;">${parseInt(ma26Val).toLocaleString()}</td>
