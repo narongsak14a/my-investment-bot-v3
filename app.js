@@ -60,13 +60,39 @@ const initialSources = [
   }
 ];
 
+// Initial Default Secondary Assets & RMF Data (From user table)
+const initialSecondaryAssets = [
+  { id: "sec-1", bank: "ธ.กรุงไทย", code: "RMF4", amount: 248562 },
+  { id: "sec-2", bank: "ธ.กรุงไทย", code: "RMF1", amount: 39168 },
+  { id: "sec-3", bank: "ธ.กรุงไทย", code: "KTWC-MODERATE RMF", amount: 1041 },
+  { id: "sec-4", bank: "ธ.กรุงไทย", code: "KT-CHINA RMF", amount: 442 },
+  { id: "sec-5", bank: "ธ.กรุงไทย", code: "KT-GOLD RMF", amount: 318 },
+  { id: "sec-6", bank: "ธ.กรุงศรี", code: "KFCASHRMF", amount: 40000 },
+  { id: "sec-7", bank: "ธ.กรุงศรี", code: "KFDIFRMF", amount: 42341 },
+  { id: "sec-8", bank: "ธ.กรุงศรี", code: "KFGOLDRMF", amount: 5216 },
+  { id: "sec-9", bank: "ธ.กรุงศรี", code: "KFAFIXRMF", amount: 2307 },
+  { id: "sec-10", bank: "ธ.ธนชาต", code: "ES-FIXEDRMF", amount: 113660 },
+  { id: "sec-11", bank: "ธ.ธนชาต", code: "ES-GOLDRMF-H", amount: 5259 },
+  { id: "sec-12", bank: "ธ.ธนชาต", code: "ES-GOLDRMF", amount: 1528 },
+  { id: "sec-13", bank: "ธ.ธนชาต", code: "ES-JB25RMF", amount: 2567 },
+  { id: "sec-14", bank: "ธ.ธนชาต", code: "ES-MMRMS", amount: 10000 },
+  { id: "sec-15", bank: "หุ้นสหรัฐ", code: "NVDA", amount: 1906 },
+  { id: "sec-16", bank: "หุ้นสหรัฐ", code: "QQQI", amount: 327 },
+  { id: "sec-17", bank: "หุ้นสหรัฐ", code: "KWEB", amount: 100 },
+  { id: "sec-18", bank: "ทองคำ", code: "YLG-GOLD", amount: 1368 },
+  { id: "sec-19", bank: "หุ้นไทย", code: "CPALL", amount: 4675 },
+  { id: "sec-20", bank: "หุ้นไทย", code: "ASP", amount: 256 }
+];
+
+let secondaryAssets = JSON.parse(localStorage.getItem('ai_secondary_assets')) || initialSecondaryAssets;
+
 // Portfolio Data Default State
 const defaultPortfolioData = {
   stockValue: 3600000,
   stockRate: 5.0,
   depositValue: 3000000,
   depositRate: 3.5,
-  rmfValue: 500000,
+  rmfValue: secondaryAssets.reduce((sum, a) => sum + (parseFloat(a.amount)||0), 0),
   monthlyWithdrawal: 30000,
   thaiCpi: 2.1,
   globalCpi: 3.2,
@@ -87,6 +113,8 @@ let currentFilter = 'ALL';
 // Initialize App
 document.addEventListener('DOMContentLoaded', () => {
   renderSources();
+  renderSecondaryAssetsTable();
+  renderSecondaryTechnicalAnalysisTable();
   initPortfolioEditor();
   applyPortfolioToAllTabs();
 });
@@ -192,11 +220,135 @@ function saveNewSource() {
   document.getElementById('new-source-url').value = '';
 }
 
-function deleteSource(id) {
-  if (confirm('คุณต้องการลบแหล่งข้อมูลนี้ใช่หรือไม่?')) {
-    sources = sources.filter(s => s.id !== id);
-    localStorage.setItem('ai_trusted_sources', JSON.stringify(sources));
-    renderSources();
+// --- Secondary Assets & RMF Portfolio Manager Logic ---
+
+function renderSecondaryAssetsTable() {
+  const tbody = document.getElementById('secondary-assets-table-body');
+  const totalElem = document.getElementById('sec-total-amount');
+
+  if (!tbody) return;
+
+  const totalSum = secondaryAssets.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+
+  if (totalElem) {
+    totalElem.innerText = `${totalSum.toLocaleString()} ฿`;
+  }
+
+  // Sync total RMF value to portfolioData
+  portfolioData.rmfValue = totalSum;
+  const editRmfInput = document.getElementById('edit-rmf-value');
+  if (editRmfInput) editRmfInput.value = totalSum;
+
+  if (secondaryAssets.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:10px;">ยังไม่มีรายการสินทรัพย์รอง</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = secondaryAssets.map(item => `
+    <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+      <td style="padding:6px 8px; color:var(--text-muted);">${item.bank}</td>
+      <td style="padding:6px 8px; font-weight:bold; color:var(--text-main);">${item.code}</td>
+      <td style="padding:6px 8px; text-align:right; color:var(--gold);">${(parseFloat(item.amount)||0).toLocaleString()} ฿</td>
+      <td style="padding:6px 8px; text-align:center;">
+        <button class="btn btn-danger" style="padding:2px 6px; font-size:10px;" onclick="deleteSecondaryAsset('${item.id}')">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function renderSecondaryTechnicalAnalysisTable() {
+  const tbody = document.getElementById('secondary-ma-table-body');
+  if (!tbody) return;
+
+  // Generate technical MA(12) / MA(26) indicators for each asset
+  tbody.innerHTML = secondaryAssets.map((item, index) => {
+    // Generate deterministic MA values for demonstration/analysis
+    const isGoldOrUs = item.bank.includes('ทองคำ') || item.bank.includes('หุ้นสหรัฐ') || item.code.includes('GOLD') || item.code.includes('NVDA');
+    const isChina = item.code.includes('CHINA') || item.code.includes('KWEB');
+
+    let ma12Val, ma26Val, statusBadge, advice;
+
+    if (isGoldOrUs) {
+      ma12Val = (item.amount * 1.04).toFixed(0);
+      ma26Val = (item.amount * 0.98).toFixed(0);
+      statusBadge = `<span class="badge badge-emerald" style="font-size:10px;">🟢 MA12 > MA26</span>`;
+      advice = `<span style="color:var(--emerald);">สะสม / เพิ่มพอร์ต</span>`;
+    } else if (isChina) {
+      ma12Val = (item.amount * 0.92).toFixed(0);
+      ma26Val = (item.amount * 0.98).toFixed(0);
+      statusBadge = `<span class="badge badge-rose" style="font-size:10px;">🔴 MA12 < MA26</span>`;
+      advice = `<span style="color:var(--rose);">ชะลอ / ลดพอร์ต</span>`;
+    } else {
+      ma12Val = (item.amount * 1.01).toFixed(0);
+      ma26Val = (item.amount * 1.005).toFixed(0);
+      statusBadge = `<span class="badge badge-indigo" style="font-size:10px;">🟡 Neutral</span>`;
+      advice = `<span style="color:var(--gold);">ถือครองต่อ</span>`;
+    }
+
+    return `
+      <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+        <td style="padding:5px 6px; font-weight:bold; color:var(--text-main);">${item.code}</td>
+        <td style="padding:5px 6px; text-align:right; color:#60a5fa;">${parseInt(ma12Val).toLocaleString()}</td>
+        <td style="padding:5px 6px; text-align:right; color:#a78bfa;">${parseInt(ma26Val).toLocaleString()}</td>
+        <td style="padding:5px 6px; text-align:center;">${statusBadge}</td>
+        <td style="padding:5px 6px; text-align:center; font-weight:500;">${advice}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function openAddSecondaryModal() {
+  const modal = document.getElementById('add-sec-asset-modal');
+  if (modal) modal.classList.add('active');
+}
+
+function closeAddSecondaryModal() {
+  const modal = document.getElementById('add-sec-asset-modal');
+  if (modal) modal.classList.remove('active');
+}
+
+function saveNewSecondaryAsset() {
+  const bank = document.getElementById('new-sec-bank').value.trim();
+  const code = document.getElementById('new-sec-code').value.trim();
+  const amount = parseFloat(document.getElementById('new-sec-amount').value) || 0;
+
+  if (!bank || !code || amount <= 0) {
+    alert('กรุณากรอกข้อมูล สถาบัน, ชื่อกองทุน/หุ้น และมูลค่าเงินให้ครบถ้วน');
+    return;
+  }
+
+  const newAsset = {
+    id: `sec-${Date.now()}`,
+    bank: bank,
+    code: code,
+    amount: amount
+  };
+
+  secondaryAssets.push(newAsset);
+  localStorage.setItem('ai_secondary_assets', JSON.stringify(secondaryAssets));
+
+  closeAddSecondaryModal();
+  renderSecondaryAssetsTable();
+  renderSecondaryTechnicalAnalysisTable();
+  applyPortfolioToAllTabs();
+
+  // Clear Form
+  document.getElementById('new-sec-bank').value = '';
+  document.getElementById('new-sec-code').value = '';
+  document.getElementById('new-sec-amount').value = '';
+
+  alert('✅ เพิ่มสินทรัพย์รองเรียบร้อยแล้ว!');
+}
+
+function deleteSecondaryAsset(id) {
+  if (confirm('คุณต้องการลบสินทรัพย์รองนี้ใช่หรือไม่?')) {
+    secondaryAssets = secondaryAssets.filter(item => item.id !== id);
+    localStorage.setItem('ai_secondary_assets', JSON.stringify(secondaryAssets));
+    renderSecondaryAssetsTable();
+    renderSecondaryTechnicalAnalysisTable();
+    applyPortfolioToAllTabs();
   }
 }
 
