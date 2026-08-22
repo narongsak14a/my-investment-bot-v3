@@ -341,6 +341,9 @@ function applyPortfolioToAllTabs() {
   const cashflowSubElem = document.getElementById('dash-cashflow-sub');
   if (cashflowSubElem) cashflowSubElem.innerText = `ถอน ${(d.monthlyWithdrawal/1000).toFixed(0)}k/ด. (อยู่ได้ยาวนาน ${runway} ปี)`;
 
+  const globalGrowthSubElem = document.getElementById('dash-global-growth-sub');
+  if (globalGrowthSubElem) globalGrowthSubElem.innerText = `เสนอสะสมทองคำ ${(d.goldBudget/1000).toFixed(0)}k บ. ที่ $${d.goldPrice.toLocaleString()} (Stop Loss $${d.goldStopLoss.toLocaleString()})`;
+
   // 2. Calculator Tab Sync
   const calcStock = document.getElementById('calc-stock');
   if (calcStock) calcStock.value = d.stockValue;
