@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Wealth Management Dashboard | CIO Control Center</title>
+  
+  <!-- Google Fonts: Prompt & Sarabun -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom Glassmorphism CSS -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header Section -->
+  <header>
+    <div class="brand">
+      <div class="brand-logo">
+        <i class="fa-solid fa-chart-line"></i>
+      </div>
+      <div class="brand-text">
+        <h1>AI WEALTH AGENCY</h1>
+        <p>RETIREMENT FUND CONTROL CENTER (7.1M THB)</p>
+      </div>
+    </div>
+
+    <nav>
+      <button class="nav-btn active" onclick="switchTab('dashboard')">
+        <i class="fa-solid fa-gauge-high"></i> ภาพรวมพอร์ต
+      </button>
+      <button class="nav-btn" onclick="switchTab('sources')">
+        <i class="fa-solid fa-link"></i> แหล่งข้อมูลน่าเชื่อถือ (Sources)
+      </button>
+      <button class="nav-btn" onclick="switchTab('reports')">
+        <i class="fa-solid fa-file-invoice-dollar"></i> รายงานประจำวัน & การอนุมัติ
+      </button>
+      <button class="nav-btn" onclick="switchTab('calculator')">
+        <i class="fa-solid fa-calculator"></i> คำนวณ Cash Flow
+      </button>
+      <button class="nav-btn" onclick="switchTab('portfolio-edit')">
+        <i class="fa-solid fa-pen-to-square"></i> แก้ไขข้อมูลพอร์ต
+      </button>
+    </nav>
+
+    <div>
+      <button class="btn btn-gold" onclick="triggerRunMeeting()">
+        <i class="fa-solid fa-play"></i> รันประชุม AI ประจำวัน
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main>
+
+    <!-- TAB 1: DASHBOARD OVERVIEW -->
+    <div id="tab-dashboard" class="tab-content active">
+      <!-- Metric Cards Header -->
+      <div class="grid-4">
+        <div class="metric-box">
+          <div class="metric-label"><i class="fa-solid fa-vault"></i> มูลค่าพอร์ตรวม (Total NAV)</div>
+          <div class="metric-value" id="dash-total-nav">7,100,000 ฿</div>
+          <div class="metric-sub" id="dash-total-sub"><i class="fa-solid fa-arrow-trend-up"></i> +2.9% ชนะเงินเฟ้อสุทธิ</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label"><i class="fa-solid fa-shield-halved"></i> Core Portfolio (80% Target)</div>
+          <div class="metric-value" id="dash-core-nav">6,600,000 ฿</div>
+          <div class="metric-sub" id="dash-core-sub">หุ้นสหกรณ์ 3.6M + ฝาก 3.0M + RMF 500k</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label"><i class="fa-solid fa-rocket"></i> Satellite Portfolio (20% Target)</div>
+          <div class="metric-value" id="dash-sat-nav">500,000 ฿</div>
+          <div class="metric-sub" id="dash-sat-sub">ทองคำ XAUUSD / หุ้น US / BTC</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label"><i class="fa-solid fa-money-bill-transfer"></i> กระแสเงินสดสุทธิ (Net Cash Flow)</div>
+          <div class="metric-value" id="dash-cashflow-nav" style="color: var(--gold);">-75,000 ฿/ปี</div>
+          <div class="metric-sub" id="dash-cashflow-sub">ถอน 30k/ด. (อยู่ได้ยาวนาน 40 ปี)</div>
+        </div>
+      </div>
+
+      <!-- Main Overview Grid -->
+      <div class="grid-2" style="margin-top: 24px;">
+        
+        <!-- Department Status Cards -->
+        <div class="card">
+          <div class="card-title">
+            <span><i class="fa-solid fa-sitemap"></i> สถานะการทำงาน 6 แผนก AI</span>
+            <span class="badge badge-emerald">ระบบทำงานปกติ (Autonomy)</span>
+          </div>
+
+          <div class="grid-2" style="gap: 12px;">
+            <div class="metric-box">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="color: #60a5fa;"><i class="fa-solid fa-globe"></i> 1. Macro & Strategy</strong>
+                <span class="badge badge-indigo">Hurdle 5%</span>
+              </div>
+              <p style="font-size: 11px; color: var(--text-muted); margin-top:6px;">วิเคราะห์เงินเฟ้อไทย (2.1%) และโลก (3.2%) ควบคุมสัดส่วนพอร์ต</p>
+            </div>
+
+            <div class="metric-box">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="color: #34d399;"><i class="fa-solid fa-house-user"></i> 2. Domestic & Income</strong>
+                <span class="badge badge-emerald">Cash Flow 285k</span>
+              </div>
+              <p style="font-size: 11px; color: var(--text-muted); margin-top:6px;">ดอกเบี้ยฝาก 8,750 บ./ด. + ปันผลสหกรณ์ 180k/ปี (ก.พ.)</p>
+            </div>
+
+            <div class="metric-box">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="color: #f59e0b;"><i class="fa-solid fa-chart-line"></i> 3. Global Growth</strong>
+                <span class="badge badge-gold">Proposal: BUY XAUUSD</span>
+              </div>
+              <p style="font-size: 11px; color: var(--text-muted); margin-top:6px;">เสนอสะสมทองคำ 100k บ. ที่ $2,430 (Stop Loss $2,390)</p>
+            </div>
+
+            <div class="metric-box">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="color: #f43f5e;"><i class="fa-solid fa-shield-cat"></i> 4. Risk Control</strong>
+                <span class="badge badge-emerald">AUDIT PASSED</span>
+              </div>
+              <p style="font-size: 11px; color: var(--text-muted); margin-top:6px;">Max Drawdown Limit 3%, No Leverage, Stress Test ผ่าน 40 ปี</p>
+            </div>
+
+            <div class="metric-box">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="color: #a78bfa;"><i class="fa-solid fa-database"></i> 5. Data Operations</strong>
+                <span class="badge badge-indigo">100% Ingested</span>
+              </div>
+              <p style="font-size: 11px; color: var(--text-muted); margin-top:6px;">ป้อนราคา Real-time XAU/BTC/SPY & ข่าว Sentiment (+0.65)</p>
+            </div>
+
+            <div class="metric-box">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="color: #f38ba8;"><i class="fa-solid fa-user-tie"></i> 6. Executive PM</strong>
+                <span class="badge badge-gold">Pending CIO Approval</span>
+              </div>
+              <p style="font-size: 11px; color: var(--text-muted); margin-top:6px;">รวบรวมรายงานสรุป เสนอแผนอนุมัติถอนเงิน 30k & ซื้อทองคำ</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Latest Approval Action Card -->
+        <div class="card">
+          <div class="card-title">
+            <span><i class="fa-solid fa-file-signature"></i> การอนุมัติประจำวันล่าสุด (CIO Action Needed)</span>
+            <span class="badge badge-gold" id="current-status-badge">รอดำเนินการ</span>
+          </div>
+
+          <div style="background: rgba(15,23,42,0.8); border:1px solid var(--border-glow); border-radius:10px; padding:16px; margin-bottom:16px;">
+            <h4 style="color:var(--gold); font-size:14px; margin-bottom:8px;">คำสั่งซื้อขายเสนออนุมัติประจำวันที่ 5 ส.ค. 2026:</h4>
+            <ul id="approval-action-list" style="font-size:13px; color:var(--text-main); margin-left:18px; line-height:1.8;">
+              <li><strong>การถอนเงินใช้จ่าย</strong>: ถอนเงินฝากสหกรณ์ 30,000 บาท/เดือน (สุทธิถอนจริง 21,250 บ./เดือน หลังหักดอกเบี้ยรับ)</li>
+              <li><strong>การลงทุนชดเชยส่วนขาด</strong>: ซื้อสะสมทองคำ (XAUUSD / Gold Fund) วงเงิน <strong>100,000 บาท</strong> ที่ราคา 4,100 THB</li>
+              <li><strong>จุดตัดขาดทุน (Stop Loss)</strong>: 3,900 THB (จำกัดขาดทุนสูงสุด)</li>
+            </ul>
+          </div>
+
+          <div style="display:flex; gap:10px;">
+            <button class="btn btn-gold" style="flex:1;" onclick="handleQuickApprove('APPROVED')">
+              <i class="fa-solid fa-circle-check"></i> อนุมัติ (Approve)
+            </button>
+            <button class="btn btn-outline" style="flex:1;" onclick="handleQuickApprove('HOLD')">
+              <i class="fa-solid fa-circle-pause"></i> ชะลอการลงทุน (Hold)
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 2: TRUSTED DATA SOURCES MANAGER -->
+    <div id="tab-sources" class="tab-content">
+      <div class="card">
+        <div class="card-title">
+          <span><i class="fa-solid fa-list-check"></i> จัดการแหล่งข้อมูลน่าเชื่อถือรายแผนก (Trusted Sources Manager)</span>
+          <button class="btn btn-gold" onclick="openAddSourceModal()">
+            <i class="fa-solid fa-plus"></i> เพิ่มแหล่งข้อมูลใหม่
+          </button>
+        </div>
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">
+          CIO สามารถกำหนดลิงก์ ช่อง YouTube เว็บไซต์วิเคราะห์ราคา (เช่น TradingView, BOT, FED, SET) ให้แต่ละแผนกนำไปสืบค้นข้อมูล
+        </p>
+
+        <!-- Department Filter -->
+        <div style="display:flex; gap:10px; margin-bottom:16px; overflow-x:auto; padding-bottom:6px;">
+          <button class="btn btn-outline active-filter" onclick="filterSources('ALL', this)">ทั้งหมด</button>
+          <button class="btn btn-outline" onclick="filterSources('Macro Strategy', this)">Macro & Strategy</button>
+          <button class="btn btn-outline" onclick="filterSources('Global Growth Assets', this)">Global Growth</button>
+          <button class="btn btn-outline" onclick="filterSources('Domestic Income', this)">Domestic & Income</button>
+          <button class="btn btn-outline" onclick="filterSources('Data Intelligence', this)">Data Intelligence</button>
+        </div>
+
+        <!-- Sources Container -->
+        <div id="sources-list-container">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: DAILY REPORTS & APPROVAL -->
+    <div id="tab-reports" class="tab-content">
+      <div class="card">
+        <div class="card-title">
+          <span><i class="fa-solid fa-file-pdf"></i> ศูนย์รายงานประจำวันและการบันทึกการอนุมัติ</span>
+          <div style="display:flex; gap:10px;">
+            <a href="daily_executive_report.pdf" target="_blank" class="btn btn-gold">
+              <i class="fa-solid fa-file-pdf"></i> ดาวน์โหลด PDF ฉบับเต็ม
+            </a>
+          </div>
+        </div>
+
+        <!-- Report Viewer Box -->
+        <div class="report-content" id="report-view-area">
+          <!-- Populated by app.js or fetched HTML -->
+        </div>
+
+        <!-- Interactive Signature & Approval Section -->
+        <div class="card" style="margin-top:20px; background: rgba(15,23,42,0.9);">
+          <div class="card-title">
+            <span style="color:var(--gold);"><i class="fa-solid fa-pen-nib"></i> ส่วนการบันทึกการอนุมัติของผู้ถือหุ้นใหญ่ (CIO Authorization Log)</span>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">คำตัดสินการอนุมัติ:</label>
+            <select class="form-select" id="cio-decision-select">
+              <option value="APPROVED">🟢 อนุมัติ (APPROVED) - ดำเนินการถอนเงิน 30k/เดือน + ซื้อทองคำ 100k</option>
+              <option value="HOLD">🟡 ชะลอการลงทุน (HOLD) - อนุมัติเฉพาะการถอนเงิน 30k แต่ให้ชะลอการซื้อทองคำ</option>
+              <option value="REVISE">🔴 ปรับเปลี่ยนเงื่อนไข (REVISE) - ให้แผนกปรับปรุงเงื่อนไขใหม่</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">หมายเหตุหรือคำสั่งเพิ่มเติมจาก CIO:</label>
+            <textarea class="form-textarea" id="cio-comments" rows="3" placeholder="ระบุข้อความสั่งการเพิ่มเติมแก่ประธานบริหาร AI..."></textarea>
+          </div>
+
+          <button class="btn btn-gold" onclick="submitCioDecision()">
+            <i class="fa-solid fa-paper-plane"></i> บันทึกผลการอนุมัติและส่งกลับทีม AI
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: CASH FLOW CALCULATOR -->
+    <div id="tab-calculator" class="tab-content">
+      <div class="card">
+        <div class="card-title">
+          <span><i class="fa-solid fa-calculator"></i> เครื่องมือจำลองสมดุลกระแสเงินสดและอายุเงินฝาก (Cash Flow & Liquidity Simulator)</span>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <div class="form-group">
+              <label class="form-label">เงินต้นหุ้นสหกรณ์ (บาท):</label>
+              <input type="number" class="form-input" id="calc-stock" value="3600000" onchange="recalculateCashflow()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">ปันผลหุ้นสหกรณ์ (% ต่อปี):</label>
+              <input type="number" step="0.1" class="form-input" id="calc-stock-rate" value="5.0" onchange="recalculateCashflow()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">เงินฝากสหกรณ์ (บาท):</label>
+              <input type="number" class="form-input" id="calc-deposit" value="3000000" onchange="recalculateCashflow()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">ดอกเบี้ยเงินฝากสหกรณ์ (% ต่อปี):</label>
+              <input type="number" step="0.1" class="form-input" id="calc-deposit-rate" value="3.5" onchange="recalculateCashflow()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">รายจ่ายถอนใช้ประจำ (บาท/เดือน):</label>
+              <input type="number" class="form-input" id="calc-withdrawal" value="30000" onchange="recalculateCashflow()">
+            </div>
+          </div>
+
+          <!-- Live Output Box -->
+          <div style="background: rgba(15,23,42,0.8); border:1px solid var(--border-glow); border-radius:12px; padding:20px;">
+            <h4 style="color:var(--gold); font-size:16px; margin-bottom:14px;"><i class="fa-solid fa-chart-pie"></i> ผลลัพธ์การคำนวณสมดุลเงินสด:</h4>
+            
+            <div class="metric-box" style="margin-bottom:10px;">
+              <div class="metric-label">รายรับดอกเบี้ยฝากเข้าประจำเดือน:</div>
+              <div class="metric-value" id="res-monthly-interest" style="color:var(--emerald);">8,750 ฿/เดือน</div>
+            </div>
+
+            <div class="metric-box" style="margin-bottom:10px;">
+              <div class="metric-label">รายรับปันผลหุ้นสหกรณ์รับประจำปี (ก.พ.):</div>
+              <div class="metric-value" id="res-annual-dividend" style="color:var(--emerald);">180,000 ฿/ปี</div>
+            </div>
+
+            <div class="metric-box" style="margin-bottom:10px;">
+              <div class="metric-label">สุทธิเงินสดขาดดุลรวมทั้งปี:</div>
+              <div class="metric-value" id="res-annual-net" style="color:var(--rose);">-75,000 ฿/ปี</div>
+              <div style="font-size:11px; color:var(--text-muted);">(เฉลี่ยขาดเพียง -6,250 บาท/เดือน)</div>
+            </div>
+
+            <div class="metric-box" style="background: rgba(16,185,129,0.1); border-color:var(--emerald);">
+              <div class="metric-label">ระยะเวลาคงอยู่ของเงินฝาก 3.0 ล้านบาท (Runway):</div>
+              <div class="metric-value" id="res-runway" style="color:#ffffff;">40.0 ปีเต็ม!</div>
+              <div style="font-size:11px; color:var(--emerald);">เงินฝากรองรับรายจ่ายได้สบายโดยไม่ต้องแตะหุ้น 3.6M</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- TAB 5: PORTFOLIO EDITOR -->
+    <div id="tab-portfolio-edit" class="tab-content">
+      <div class="card">
+        <div class="card-title">
+          <span><i class="fa-solid fa-pen-to-square"></i> แก้ไขข้อมูลพอร์ตการลงทุน (Portfolio Data Editor)</span>
+          <div style="display:flex; gap:10px;">
+            <button class="btn btn-outline" onclick="resetPortfolioToDefault()">
+              <i class="fa-solid fa-rotate-left"></i> รีเซ็ตค่าเริ่มต้น
+            </button>
+            <button class="btn btn-gold" onclick="savePortfolioChanges()">
+              <i class="fa-solid fa-floppy-disk"></i> บันทึกและอัปเดตทั้งระบบ
+            </button>
+          </div>
+        </div>
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">
+          แก้ไขข้อมูลพอร์ตการลงทุนที่นี่ เมื่อกด <strong style="color:var(--gold);">"บันทึกและอัปเดตทั้งระบบ"</strong> ข้อมูลใน <strong>ทุกแท็บ</strong> (ภาพรวม, รายงาน, คำนวณ Cash Flow) จะถูกอัปเดตโดยอัตโนมัติ
+        </p>
+
+        <div class="grid-2">
+          <!-- Left Column: Core Assets, Cash Flow, Macro -->
+          <div>
+            <!-- Core Assets -->
+            <div style="background:rgba(15,23,42,0.6); border:1px solid var(--border-glow); border-radius:12px; padding:20px; margin-bottom:16px;">
+              <h4 style="color:var(--gold); font-size:14px; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
+                <i class="fa-solid fa-vault"></i> สินทรัพย์หลัก (Core Portfolio)
+              </h4>
+              <div class="form-group">
+                <label class="form-label">มูลค่าหุ้นสหกรณ์ (บาท):</label>
+                <input type="number" class="form-input" id="edit-stock-value" oninput="updatePortfolioPreview()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">อัตราปันผลหุ้นสหกรณ์ (% ต่อปี):</label>
+                <input type="number" step="0.1" class="form-input" id="edit-stock-rate" oninput="updatePortfolioPreview()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">มูลค่าเงินฝากสหกรณ์ (บาท):</label>
+                <input type="number" class="form-input" id="edit-deposit-value" oninput="updatePortfolioPreview()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">อัตราดอกเบี้ยเงินฝากสหกรณ์ (% ต่อปี):</label>
+                <input type="number" step="0.1" class="form-input" id="edit-deposit-rate" oninput="updatePortfolioPreview()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">มูลค่ากองทุน RMF (บาท):</label>
+                <input type="number" class="form-input" id="edit-rmf-value" oninput="updatePortfolioPreview()">
+              </div>
+            </div>
+
+            <!-- Cash Flow -->
+            <div style="background:rgba(15,23,42,0.6); border:1px solid var(--border-glow); border-radius:12px; padding:20px; margin-bottom:16px;">
+              <h4 style="color:#34d399; font-size:14px; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
+                <i class="fa-solid fa-money-bill-transfer"></i> กระแสเงินสด (Cash Flow)
+              </h4>
+              <div class="form-group">
+                <label class="form-label">รายจ่ายถอนใช้ประจำ (บาท/เดือน):</label>
+                <input type="number" class="form-input" id="edit-monthly-withdrawal" oninput="updatePortfolioPreview()">
+              </div>
+            </div>
+
+            <!-- Macro Data -->
+            <div style="background:rgba(15,23,42,0.6); border:1px solid var(--border-glow); border-radius:12px; padding:20px;">
+              <h4 style="color:#60a5fa; font-size:14px; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
+                <i class="fa-solid fa-globe"></i> ข้อมูลเศรษฐกิจมหภาค (Macro Data)
+              </h4>
+              <div class="form-group">
+                <label class="form-label">อัตราเงินเฟ้อไทย - Thai CPI (%):</label>
+                <input type="number" step="0.1" class="form-input" id="edit-thai-cpi">
+              </div>
+              <div class="form-group">
+                <label class="form-label">อัตราเงินเฟ้อโลก - Global CPI (%):</label>
+                <input type="number" step="0.1" class="form-input" id="edit-global-cpi">
+              </div>
+              <div class="form-group">
+                <label class="form-label">อัตราผลตอบแทนเป้าหมาย - Hurdle Rate (% ต่อปี):</label>
+                <input type="number" step="0.1" class="form-input" id="edit-hurdle-rate">
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Gold/Market + Live Preview -->
+          <div>
+            <!-- Gold & Market -->
+            <div style="background:rgba(15,23,42,0.6); border:1px solid var(--border-glow); border-radius:12px; padding:20px; margin-bottom:16px;">
+              <h4 style="color:var(--gold); font-size:14px; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
+                <i class="fa-solid fa-chart-line"></i> ข้อมูลตลาดและทองคำ (Gold & Market Data)
+              </h4>
+              <div class="form-group">
+                <label class="form-label">ราคาทองคำปัจจุบัน (บาท/บาทสุวรรณ):</label>
+                <input type="number" class="form-input" id="edit-gold-price" oninput="updatePortfolioPreview()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">วงเงินที่เสนอลงทุนทองคำ (บาท):</label>
+                <input type="number" class="form-input" id="edit-gold-budget" oninput="updatePortfolioPreview()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">ราคาเข้าซื้อเป้าหมาย - Entry Price (บาท):</label>
+                <input type="number" class="form-input" id="edit-gold-entry">
+              </div>
+              <div class="form-group">
+                <label class="form-label">จุดตัดขาดทุน - Stop Loss (บาท):</label>
+                <input type="number" class="form-input" id="edit-gold-stoploss">
+              </div>
+              <div class="form-group">
+                <label class="form-label">จุดทำกำไร - Take Profit (บาท):</label>
+                <input type="number" class="form-input" id="edit-gold-takeprofit">
+              </div>
+            </div>
+
+            <!-- Live Preview Box -->
+            <div style="background:rgba(15,23,42,0.9); border:2px solid var(--gold); border-radius:12px; padding:20px; position:sticky; top:20px;">
+              <h4 style="color:var(--gold); font-size:15px; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
+                <i class="fa-solid fa-chart-pie"></i> ผลลัพธ์ตัวอย่าง (Live Preview)
+                <span style="font-size:10px; color:var(--text-muted);">อัปเดตทันทีเมื่อแก้ไข</span>
+              </h4>
+
+              <div class="metric-box" style="margin-bottom:8px;">
+                <div class="metric-label">มูลค่าพอร์ตรวม (Total NAV):</div>
+                <div class="metric-value" id="preview-nav" style="color:#fff; font-size:20px;">-</div>
+              </div>
+              <div class="metric-box" style="margin-bottom:8px;">
+                <div class="metric-label">รายรับดอกเบี้ยเงินฝาก/เดือน:</div>
+                <div class="metric-value" id="preview-monthly-int" style="color:var(--emerald); font-size:18px;">-</div>
+              </div>
+              <div class="metric-box" style="margin-bottom:8px;">
+                <div class="metric-label">รายรับปันผลหุ้นสหกรณ์/ปี:</div>
+                <div class="metric-value" id="preview-dividend" style="color:var(--emerald); font-size:18px;">-</div>
+              </div>
+              <div class="metric-box" style="margin-bottom:8px;">
+                <div class="metric-label">รายรับรวมทั้งปี:</div>
+                <div class="metric-value" id="preview-annual-income" style="color:var(--emerald); font-size:18px;">-</div>
+              </div>
+              <div class="metric-box" style="margin-bottom:8px;">
+                <div class="metric-label">รายจ่ายถอนรวมทั้งปี:</div>
+                <div class="metric-value" id="preview-annual-withdrawal" style="color:var(--rose); font-size:18px;">-</div>
+              </div>
+              <div class="metric-box" style="margin-bottom:8px; border-color:var(--rose);">
+                <div class="metric-label">ส่วนต่างสุทธิต่อปี (ขาด/เกิน):</div>
+                <div class="metric-value" id="preview-net" style="color:var(--rose); font-size:18px;">-</div>
+              </div>
+              <div class="metric-box" style="border-color:var(--emerald); background:rgba(16,185,129,0.1);">
+                <div class="metric-label">ระยะเวลาอยู่รอดของเงินฝาก (Runway):</div>
+                <div class="metric-value" id="preview-runway" style="color:#fff; font-size:18px;">-</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Add Source Modal -->
+  <div class="modal-overlay" id="add-source-modal">
+    <div class="modal-box">
+      <h3 style="color:#ffffff; font-family:var(--font-title); margin-bottom:14px;">
+        <i class="fa-solid fa-plus-circle"></i> เพิ่มแหล่งข้อมูลน่าเชื่อถือใหม่
+      </h3>
+
+      <div class="form-group">
+        <label class="form-label">ชื่อแหล่งข้อมูล / ช่องข่าว:</label>
+        <input type="text" class="form-input" id="new-source-name" placeholder="เช่น keeAdoptionAI / TradingView XAUUSD">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">มอบหมายให้แผนก:</label>
+        <select class="form-select" id="new-source-dept">
+          <option value="Macro Strategy">Strategic & Macro Planning</option>
+          <option value="Global Growth Assets">Global Growth Assets</option>
+          <option value="Domestic Income">Domestic & Income Assets</option>
+          <option value="Risk Control">Risk Control & Guardrails</option>
+          <option value="Data Intelligence">Data Operations & Intelligence</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">ประเภทสื่อ (Category):</label>
+        <select class="form-select" id="new-source-type">
+          <option value="YouTube Channel">YouTube Channel</option>
+          <option value="Financial Chart/API">Financial Chart / TradingView</option>
+          <option value="Official Regulator">Official Bank / Regulator</option>
+          <option value="News Media">Financial News Media</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">URL ลิงก์ตรง:</label>
+        <input type="url" class="form-input" id="new-source-url" placeholder="https://www.youtube.com/@channel หรือ https://www.tradingview.com/...">
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+        <button class="btn btn-outline" onclick="closeAddSourceModal()">ยกเลิก</button>
+        <button class="btn btn-gold" onclick="saveNewSource()">บันทึกข้อมูล</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2026 AI Wealth Agency System. Built for Retirement Fund Governance (7.1M THB Capital).</p>
+  </footer>
+
+  <!-- App Script -->
+  <script src="app.js"></script>
+</body>
+</html>
