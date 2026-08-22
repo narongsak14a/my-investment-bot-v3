@@ -84,7 +84,12 @@ const initialSecondaryAssets = [
   { id: "sec-20", bank: "หุ้นไทย", code: "ASP", amount: 256 }
 ];
 
-let secondaryAssets = JSON.parse(localStorage.getItem('ai_secondary_assets')) || initialSecondaryAssets;
+let storedSec = localStorage.getItem('ai_secondary_assets');
+let secondaryAssets = (storedSec && JSON.parse(storedSec).length > 0) 
+  ? JSON.parse(storedSec) 
+  : [...initialSecondaryAssets];
+
+localStorage.setItem('ai_secondary_assets', JSON.stringify(secondaryAssets));
 
 // Portfolio Data Default State
 const defaultPortfolioData = {
@@ -227,6 +232,11 @@ function renderSecondaryAssetsTable() {
   const totalElem = document.getElementById('sec-total-amount');
 
   if (!tbody) return;
+
+  if (!secondaryAssets || secondaryAssets.length === 0) {
+    secondaryAssets = [...initialSecondaryAssets];
+    localStorage.setItem('ai_secondary_assets', JSON.stringify(secondaryAssets));
+  }
 
   const totalSum = secondaryAssets.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
 
