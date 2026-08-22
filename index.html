@@ -388,32 +388,35 @@
             </div>
           </div>
 
-          <!-- Right Column: Gold/Market + Live Preview -->
+          <!-- Right Column: Live TradingView Signal & Live Preview -->
           <div>
-            <!-- Gold & Market -->
-            <div style="background:rgba(15,23,42,0.6); border:1px solid var(--border-glow); border-radius:12px; padding:20px; margin-bottom:16px;">
-              <h4 style="color:var(--gold); font-size:14px; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
-                <i class="fa-solid fa-chart-line"></i> ข้อมูลตลาดและทองคำ (Gold & Market Data)
+            <!-- Live TradingView Analysis Card -->
+            <div style="background:rgba(15,23,42,0.8); border:1px solid var(--border-glow); border-radius:12px; padding:20px; margin-bottom:16px;">
+              <h4 style="color:var(--gold); font-size:14px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between;">
+                <span><i class="fa-solid fa-chart-line"></i> สัญญาณวิเคราะห์ TradingView (XAUUSD TF 5m)</span>
+                <button class="btn btn-gold" style="padding:4px 10px; font-size:11px;" onclick="fetchLiveTradingViewData()">
+                  <i class="fa-solid fa-arrows-rotate"></i> ดึงข้อมูลใหม่
+                </button>
               </h4>
-              <div class="form-group">
-                <label class="form-label">ราคาทองคำปัจจุบัน (บาท/บาทสุวรรณ):</label>
-                <input type="number" class="form-input" id="edit-gold-price" oninput="updatePortfolioPreview()">
+
+              <div style="background:rgba(2,6,23,0.6); border-radius:8px; padding:12px; margin-bottom:12px; font-size:12px; line-height:1.7;">
+                <div><strong>สินทรัพย์</strong>: XAUUSD (ทองคำ/ดอลลาร์) | <strong>Timeframe</strong>: 5m</div>
+                <div><strong>ราคา TradingView ล่าสุด</strong>: <span id="tv-live-price" style="color:var(--gold); font-weight:bold;">$4,602.99 USD</span></div>
+                <div><strong>MA Line 12 (5m)</strong>: <span id="tv-ma12">$4,608.10</span></div>
+                <div><strong>MA Line 26 (5m)</strong>: <span id="tv-ma26">$4,595.40</span></div>
               </div>
-              <div class="form-group">
-                <label class="form-label">วงเงินที่เสนอลงทุนทองคำ (บาท):</label>
-                <input type="number" class="form-input" id="edit-gold-budget" oninput="updatePortfolioPreview()">
-              </div>
-              <div class="form-group">
-                <label class="form-label">ราคาเข้าซื้อเป้าหมาย - Entry Price (บาท):</label>
-                <input type="number" class="form-input" id="edit-gold-entry">
-              </div>
-              <div class="form-group">
-                <label class="form-label">จุดตัดขาดทุน - Stop Loss (บาท):</label>
-                <input type="number" class="form-input" id="edit-gold-stoploss">
-              </div>
-              <div class="form-group">
-                <label class="form-label">จุดทำกำไร - Take Profit (บาท):</label>
-                <input type="number" class="form-input" id="edit-gold-takeprofit">
+
+              <!-- Signal Alert Banner -->
+              <div id="tv-signal-banner" style="background:rgba(16,185,129,0.15); border:1px solid var(--emerald); border-radius:8px; padding:12px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span id="tv-signal-icon" style="font-size:18px; color:var(--emerald);"><i class="fa-solid fa-circle-check"></i></span>
+                  <div>
+                    <strong id="tv-signal-title" style="color:var(--emerald); font-size:13px;">สัญญาณเตือน: Golden Cross (MA 12 ตัดขึ้นเหนือ MA 26)</strong>
+                    <p id="tv-signal-desc" style="font-size:11px; color:var(--text-main); margin-top:2px;">
+                      เส้น MA 12 ($4,608.10) ตัดขึ้นเหนือเส้น MA 26 ($4,595.40) ใน TF 5m 🟢 แนะนำสะสม/เพิ่มน้ำหนักพอร์ตทองคำ
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
 
